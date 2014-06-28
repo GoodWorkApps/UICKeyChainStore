@@ -8,6 +8,7 @@
 
 #import "UICKeyChainStore.h"
 
+static BOOL _shouldSync;
 static NSString *_defaultService;
 
 @interface UICKeyChainStore () {
@@ -25,6 +26,16 @@ static NSString *_defaultService;
     }
     
     return _defaultService;
+}
+
++ (BOOL)shouldSync
+{
+    return _shouldSync;
+}
+
++ (void)setShouldSync:(BOOL)value
+{
+    _shouldSync = value;
 }
 
 + (void)setDefaultService:(NSString *)defaultService
@@ -191,6 +202,10 @@ static NSString *_defaultService;
     }
 #endif
     
+#if !TARGET_IPHONE_SIMULATOR && defined(__IPHONE_7_0)
+    [query setObject:(__bridge id) (_shouldSync ? kCFBooleanTrue : kCFBooleanFalse) forKey:(__bridge id)kSecAttrSynchronizable];
+#endif
+    
     OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, NULL);
     if (status == errSecSuccess) {
         if (data) {
@@ -220,6 +235,10 @@ static NSString *_defaultService;
         }
 #endif
         
+#if !TARGET_IPHONE_SIMULATOR && defined(__IPHONE_7_0)
+        [query setObject:(__bridge id) (_shouldSync ? kCFBooleanTrue : kCFBooleanFalse) forKey:(__bridge id)kSecAttrSynchronizable];
+#endif
+
         status = SecItemAdd((__bridge CFDictionaryRef)attributes, NULL);
         if (status != errSecSuccess) {
             return NO;

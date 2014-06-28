@@ -16,6 +16,9 @@
 + (NSString *)defaultService;
 + (void)setDefaultService:(NSString *)defaultService;
 
++ (BOOL)shouldSync;
++ (void)setShouldSync:(BOOL)value;
+
 + (UICKeyChainStore *)keyChainStore;
 + (UICKeyChainStore *)keyChainStoreWithService:(NSString *)service;
 + (UICKeyChainStore *)keyChainStoreWithService:(NSString *)service accessGroup:(NSString *)accessGroup;
